@@ -1,32 +1,18 @@
 import Header from "./components/Header";
 import EmptyCover from './components/EmptyCover';
 import ToDoList from './components/ToDoList';
-import { useRef, useReducer, useEffect } from 'react';
-import tasksReducer from "./tasksReducer";
+import { useRef, useEffect } from 'react';
 import axios from 'axios';
-
-let initialTasks = [];
-
+import { selectTodolist, addItem, getItem, fetchData } from "./features/todolistSlice";
+import { useSelector, useDispatch } from 'react-redux';
 
 function App() {
-
+  const tasks = useSelector(selectTodolist);
+  const dispatch = useDispatch();
   const inputRef = useRef(null);
-  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios('https://fathomless-brushlands-42339.herokuapp.com/todo2');
-        dispatch({
-          type: 'getItem',
-          data: res.data
-        });
-      }
-      catch (err) {
-        console.log(err)
-      }
-    };
-    fetchData()
+    dispatch(fetchData());
   }, [])
 
   async function addItemDispatch() {
@@ -39,24 +25,14 @@ function App() {
         item: obj.item,
         completed: obj.completed
       });
-      dispatch({
-        type: 'addItem',
-        item: obj.item,
-        completed: obj.completed
-      }
-      );
+      dispatch(addItem(obj.item));
       inputRef.current.value = '';
+      dispatch(fetchData())
     }
     catch (err) {
       console.log(err)
       alert(err.message)
     }
-
-    const data = await fetchData();
-    dispatch({
-      type: 'getItem',
-      data: data
-    })
   }
 
   return (
@@ -67,19 +43,9 @@ function App() {
         " placeholder="新增待辦事項" ref={inputRef} />
         <button className="ms-[-44px] w-[40px] h-[39px] bg-addBtn bg-no-repeat" type='button' onClick={addItemDispatch} />
       </label>
-      {tasks.todos && tasks.todos.length !== 0 ? <ToDoList tasks={tasks} dispatch={dispatch} /> : <EmptyCover />}
+      {tasks.todos && tasks.todos.length !== 0 ? <ToDoList /> : <EmptyCover />}
     </div>
   )
 }
 
 export default App
-
-async function fetchData() {
-  try {
-    const res = await axios('https://fathomless-brushlands-42339.herokuapp.com/todo2');
-    return res.data
-  }
-  catch (err) {
-    console.log(err)
-  }
-}

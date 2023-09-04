@@ -1,22 +1,24 @@
 import { useState, useMemo } from 'react';
 import axios from 'axios';
+import { updateItem, deleteItem, toggleCompleteItem, clearAllCompleteItem, getItem, deleteData, selectTodolist } from '../features/todolistSlice';
+import { useSelector, useDispatch } from 'react-redux';
 const toDoListTitle = ['全部', '待完成', '已完成']
 
-export default function ToDoList({ tasks, dispatch }) {
+export default function ToDoList() {
   const [titleClass, setTitleClass] = useState(0);
+  const tasks = useSelector(selectTodolist);
+  const dispatch = useDispatch();
 
   async function updateItemDispatch(e, id) {
     const obj = {
       id: id,
       item: e.target.value
     }
+    if (!obj.item) return dispatch(deleteData(id))
     try {
       await axios.patch(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${obj.id}`, obj)
-      return dispatch({
-        type: 'updateItem',
-        id: obj.id,
-        item: obj.item
-      })
+      const { id, item } = obj;
+      dispatch(updateItem({ id, item }))
     }
     catch (err) {
       console.log(err)
@@ -25,11 +27,8 @@ export default function ToDoList({ tasks, dispatch }) {
 
   async function deleteItemDispatch(id) {
     try {
-      await axios.delete(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${id}`)
-      return dispatch({
-        type: 'deleteItem',
-        id: id
-      })
+      await axios.delete(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${id}`);
+      dispatch(deleteItem(id))
     }
     catch (err) {
       console.log(err)
@@ -39,10 +38,7 @@ export default function ToDoList({ tasks, dispatch }) {
   async function toggleCompleteItemDispatch(id) {
     try {
       await axios.patch(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${id}`)
-      return dispatch({
-        type: 'toggleCompleteItem',
-        id: id,
-      })
+      dispatch(toggleCompleteItem(id))
     }
     catch (err) {
       console.log(err)
@@ -56,9 +52,7 @@ export default function ToDoList({ tasks, dispatch }) {
           axios.delete(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${task.id}`)
         return
       })
-      return dispatch({
-        type: 'clearAllCompleteItem'
-      })
+      dispatch(clearAllCompleteItem());
     }
     catch (err) {
       console.log(err)

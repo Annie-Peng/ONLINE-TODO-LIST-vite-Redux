@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;200;400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: Noto Sans TC;
+    font-weight: 400;
+    font-size: 14px;
+    color: #333;
+  }
+}
+
+.unCompleteBtn::before {
+  content: "";
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background-image: url(images/btn/rectangleBox.png);
+  background-repeat: no-repeat;
+}
+
+.completeBtn::before {
+  content: "";
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background-image: url(images/btn/vectorChecked.png);
+  background-repeat: no-repeat;
+}

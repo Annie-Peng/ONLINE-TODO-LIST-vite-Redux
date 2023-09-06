@@ -1,50 +1,9 @@
-import Header from "./components/Header";
-import EmptyCover from './components/EmptyCover';
-import ToDoList from './components/ToDoList';
-import { useRef, useEffect } from 'react';
-import axios from 'axios';
-import { selectTodolist, addItem, getItem, fetchData } from "./features/todolistSlice";
-import { useSelector, useDispatch } from 'react-redux';
-
+import ToDoList from "./components/todolist"
 function App() {
-  const tasks = useSelector(selectTodolist);
-  const dispatch = useDispatch();
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    dispatch(fetchData());
-  }, [])
-
-  async function addItemDispatch() {
-    const obj = {
-      item: inputRef.current.value,
-      completed: false
-    }
-    try {
-      await axios.post('https://fathomless-brushlands-42339.herokuapp.com/todo2', {
-        item: obj.item,
-        completed: obj.completed
-      });
-      dispatch(addItem(obj.item));
-      inputRef.current.value = '';
-      dispatch(fetchData())
-    }
-    catch (err) {
-      console.log(err)
-      alert(err.message)
-    }
-  }
-
   return (
-    <div className="h-screen bg-colorBackground"  >
-      <Header />
-      <label className="flex justify-center items-center mt-12">
-        <input className="w-[500px] h-[47px] rounded-[10px] p-1 shadow-[0_0_15px_0_rgba(0,0,0,0.15)] indent-4 placeholder:text-tertiary
-        " placeholder="新增待辦事項" ref={inputRef} />
-        <button className="ms-[-44px] w-[40px] h-[39px] bg-addBtn bg-no-repeat" type='button' onClick={addItemDispatch} />
-      </label>
-      {tasks.todos && tasks.todos.length !== 0 ? <ToDoList /> : <EmptyCover />}
-    </div>
+    <>
+      <ToDoList />
+    </>
   )
 }
 

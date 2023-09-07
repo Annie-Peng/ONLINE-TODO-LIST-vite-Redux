@@ -1,6 +1,23 @@
+import { Link } from "react-router-dom";
 export default function register() {
+  function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const userName = formData.get('userName');
+    const password = formData.get('password');
+    const rePassword = formData.get('rePassword');
+    const inputs = {
+      email: email,
+      userName: userName,
+      password: password,
+      rePassword: rePassword
+    }
+    console.log(inputs)
+  }
+
   return (
-    <form className="flex flex-col gap-[24px]">
+    <form className="flex flex-col gap-[24px]" onSubmit={handleSubmit}>
       <h2 className="font-bold text-[24px]">
         註冊帳號
       </h2>
@@ -18,7 +35,7 @@ export default function register() {
       </label>
       <label className="font-bold" htmlFor="rePassword">
         再次輸入密碼
-        <input className="w-full  indent-1 p-3 rounded-[10px]  font-medium placeholder:text-tertiary mt-1" id="rePassword" name="rePassword" placeholder="請再次輸入密碼" />
+        <input className="w-full indent-1 p-3 rounded-[10px] font-medium placeholder:text-tertiary mt-1" id="rePassword" name="rePassword" placeholder="請再次輸入密碼" />
       </label>
       <button className=" py-3 px-[48px] bg-secondary text-white font-bold text-[16px] rounded-[10px] w-fit mx-auto" type="button">註冊帳號</button>
       <button className="font-bold text-[16px] w-fit mx-auto" type="button">登入</button>

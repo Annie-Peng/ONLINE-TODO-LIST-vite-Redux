@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import axios from 'axios';
-import { updateItem, deleteItem, toggleCompleteItem, clearAllCompleteItem, getItem, deleteData, selectTodolist } from '../../features/todolistSlice';
+import { updateItem, deleteItem, toggleCompleteItem, clearAllCompleteItem, deleteData, selectTodolist } from '../../features/todolistSlice';
 import { useSelector, useDispatch } from 'react-redux';
 const toDoListTitle = ['全部', '待完成', '已完成']
 
@@ -95,9 +95,9 @@ function filterTodos(tasks, tab) {
     if (tab === 0) {
       return true;
     } else if (tab === 1) {
-      return !todo.completed;
+      return !todo.status;
     } else if (tab === 2) {
-      return todo.completed;
+      return todo.status;
     }
   });
 }

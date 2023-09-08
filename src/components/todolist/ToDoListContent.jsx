@@ -75,8 +75,8 @@ export default function ToDoListContent() {
       <ul className="content p-6">
         {visibleTodos.map((task, index) => (
           <li className="border-b mb-4 pb-4 w-full flex relative" key={index}>
-            <button type='button' className={task.completed ? "completeBtn" : "unCompleteBtn"} onClick={() => toggleCompleteItemDispatch(task.id)} />
-            <input className="ms-4 w-full outline-none leading-5" value={task.item} onChange={(e) => updateItemDispatch(e, task.id)} />
+            <button type='button' className={task.status ? "completeBtn" : "unCompleteBtn"} onClick={() => toggleCompleteItemDispatch(task.id)} />
+            <input className="ms-4 w-full outline-none leading-5" value={task.content} onChange={(e) => updateItemDispatch(e, task.id)} />
             <button type='button' className="bg-deleteBtn w-[16px] h-[16px] bg-no-repeat absolute right-0 top-[2px]" onClick={() => deleteItemDispatch(task.id)} />
           </li>
         ))}

@@ -1,12 +1,12 @@
-import Header from "./components/Header";
-import EmptyCover from './components/EmptyCover';
-import ToDoList from './components/ToDoList';
+import Header from "./Header";
+import EmptyCover from './EmptyCover';
+import ToDoListContent from './ToDoListContent';
 import { useRef, useEffect } from 'react';
 import axios from 'axios';
-import { selectTodolist, addItem, getItem, fetchData } from "./features/todolistSlice";
+import { selectTodolist, addItem, fetchData } from "../../features/todolistSlice";
 import { useSelector, useDispatch } from 'react-redux';
 
-function App() {
+export default function ToDoList() {
   const tasks = useSelector(selectTodolist);
   const dispatch = useDispatch();
   const inputRef = useRef(null);
@@ -40,12 +40,11 @@ function App() {
       <Header />
       <label className="flex justify-center items-center mt-12">
         <input className="w-[500px] h-[47px] rounded-[10px] p-1 shadow-[0_0_15px_0_rgba(0,0,0,0.15)] indent-4 placeholder:text-tertiary
-        " placeholder="新增待辦事項" ref={inputRef} />
+      " placeholder="新增待辦事項" ref={inputRef} />
         <button className="ms-[-44px] w-[40px] h-[39px] bg-addBtn bg-no-repeat" type='button' onClick={addItemDispatch} />
       </label>
-      {tasks.todos && tasks.todos.length !== 0 ? <ToDoList /> : <EmptyCover />}
+      {tasks.todos && tasks.todos.length !== 0 ? <ToDoListContent /> : <EmptyCover />}
     </div>
   )
 }
 
-export default App

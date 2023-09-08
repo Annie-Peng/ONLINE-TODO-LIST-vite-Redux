@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import axios from 'axios';
-import { updateItem, deleteItem, toggleCompleteItem, clearAllCompleteItem, getItem, deleteData, selectTodolist } from '../features/todolistSlice';
+import { updateItem, deleteItem, toggleCompleteItem, clearAllCompleteItem, getItem, deleteData, selectTodolist } from '../../features/todolistSlice';
 import { useSelector, useDispatch } from 'react-redux';
 const toDoListTitle = ['全部', '待完成', '已完成']
 
-export default function ToDoList() {
+export default function ToDoListContent() {
   const [titleClass, setTitleClass] = useState(0);
   const tasks = useSelector(selectTodolist);
   const dispatch = useDispatch();

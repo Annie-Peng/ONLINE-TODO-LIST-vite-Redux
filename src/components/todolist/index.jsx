@@ -4,15 +4,23 @@ import ToDoListContent from './ToDoListContent';
 import { useRef, useEffect } from 'react';
 import axios from 'axios';
 import { selectTodolist, addItem, fetchData } from "../../features/todolistSlice";
+import { selectAuth } from '../../features/authSlice'
 import { useSelector, useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 
 export default function ToDoList() {
   const tasks = useSelector(selectTodolist);
+  const auth = useSelector(selectAuth);
   const dispatch = useDispatch();
   const inputRef = useRef(null);
 
   useEffect(() => {
-    dispatch(fetchData());
+    if (!auth.token) {
+      const token = Cookies.get('authTokenCookie');
+      dispatch(fetchData(token));
+    } else {
+      dispatch(fetchData(auth.token));
+    }
   }, [])
 
   async function addItemDispatch() {
@@ -47,4 +55,3 @@ export default function ToDoList() {
     </div>
   )
 }
-

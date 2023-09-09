@@ -18,10 +18,7 @@ export const todolistSlice = createSlice({
       state.todos[index].content = action.payload.content;
     },
     deleteItem: (state, action) => {
-      const index = state.todos.findIndex(task => {
-        task.id === action.payload;
-      });
-      console.log(index)
+      const index = state.todos.findIndex(task => task.id === action.payload);
       state.todos.splice(index, 1);
       const uncompletedData = state.todos.filter(task => !task.completed);
       state.uncompleted = uncompletedData.length;
@@ -84,7 +81,7 @@ export const updateItemDispatch = (e, id, token) => async (dispatch) => {
         Authorization: token
       }
     })
-    dispatch(updateItem(id, content))
+    dispatch(updateItem({ id, content }))
   }
   catch (err) {
     console.log(err)

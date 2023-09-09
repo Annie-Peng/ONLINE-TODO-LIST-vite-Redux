@@ -4,30 +4,39 @@ import ToDoListContent from './ToDoListContent';
 import { useRef, useEffect } from 'react';
 import axios from 'axios';
 import { selectTodolist, addItem, fetchData } from "../../features/todolistSlice";
+import { getAuth, selectAuth } from '../../features/authSlice'
 import { useSelector, useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 
 export default function ToDoList() {
   const tasks = useSelector(selectTodolist);
+  const auth = useSelector(selectAuth);
   const dispatch = useDispatch();
   const inputRef = useRef(null);
 
   useEffect(() => {
-    dispatch(fetchData());
+    if (!auth.token) {
+      const token = Cookies.get('authTokenCookie');
+      const nickname = Cookies.get('authTokenCookie');
+      dispatch(fetchData(token));
+      dispatch(getAuth({ token, nickname }))
+    } else {
+      dispatch(fetchData(auth.token));
+    }
   }, [])
 
   async function addItemDispatch() {
-    const obj = {
-      item: inputRef.current.value,
-      completed: false
-    }
+    const content = inputRef.current.value;
     try {
-      await axios.post('https://fathomless-brushlands-42339.herokuapp.com/todo2', {
-        item: obj.item,
-        completed: obj.completed
-      });
-      dispatch(addItem(obj.item));
+      await axios.post('https://todolist-api.hexschool.io/todos', { content: content }, {
+        headers: {
+          Authorization: auth.token
+        }
+      }
+      );
+      dispatch(addItem(content));
       inputRef.current.value = '';
-      dispatch(fetchData())
+      dispatch(fetchData(auth.token))
     }
     catch (err) {
       console.log(err)
@@ -47,4 +56,3 @@ export default function ToDoList() {
     </div>
   )
 }
-

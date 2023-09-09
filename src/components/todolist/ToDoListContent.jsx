@@ -1,63 +1,16 @@
 import { useState, useMemo } from 'react';
-import axios from 'axios';
-import { updateItem, deleteItem, toggleCompleteItem, clearAllCompleteItem, getItem, deleteData, selectTodolist } from '../../features/todolistSlice';
+import { deleteItemDispatch, toggleCompleteItemDispatch, clearAllCompleteItemDispatch, updateItemDispatch, selectTodolist } from '../../features/todolistSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectAuth } from '../../features/authSlice';
 const toDoListTitle = ['全部', '待完成', '已完成']
 
 export default function ToDoListContent() {
   const [titleClass, setTitleClass] = useState(0);
   const tasks = useSelector(selectTodolist);
+  const { token } = useSelector(selectAuth);
   const dispatch = useDispatch();
 
-  async function updateItemDispatch(e, id) {
-    const obj = {
-      id: id,
-      item: e.target.value
-    }
-    if (!obj.item) return dispatch(deleteData(id))
-    try {
-      await axios.patch(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${obj.id}`, obj)
-      const { id, item } = obj;
-      dispatch(updateItem({ id, item }))
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
-
-  async function deleteItemDispatch(id) {
-    try {
-      await axios.delete(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${id}`);
-      dispatch(deleteItem(id))
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
-
-  async function toggleCompleteItemDispatch(id) {
-    try {
-      await axios.patch(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${id}`)
-      dispatch(toggleCompleteItem(id))
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
-
-  async function clearAllCompleteItemDispatch(tasks) {
-    try {
-      await tasks.todos.filter(task => {
-        task.completed &&
-          axios.delete(`https://fathomless-brushlands-42339.herokuapp.com/todo2/${task.id}`)
-        return
-      })
-      dispatch(clearAllCompleteItem());
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
+  console.log(tasks.todos)
 
   const visibleTodos = useMemo(() => filterTodos(tasks.todos, titleClass), [tasks.todos, titleClass]);
 
@@ -75,15 +28,15 @@ export default function ToDoListContent() {
       <ul className="content p-6">
         {visibleTodos.map((task, index) => (
           <li className="border-b mb-4 pb-4 w-full flex relative" key={index}>
-            <button type='button' className={task.completed ? "completeBtn" : "unCompleteBtn"} onClick={() => toggleCompleteItemDispatch(task.id)} />
-            <input className="ms-4 w-full outline-none leading-5" value={task.item} onChange={(e) => updateItemDispatch(e, task.id)} />
-            <button type='button' className="bg-deleteBtn w-[16px] h-[16px] bg-no-repeat absolute right-0 top-[2px]" onClick={() => deleteItemDispatch(task.id)} />
+            <button type='button' className={task.status ? "completeBtn" : "unCompleteBtn"} onClick={() => dispatch(toggleCompleteItemDispatch(task.id, token))} />
+            <input className="ms-4 w-full outline-none leading-5" value={task.content} onChange={(e) => dispatch(updateItemDispatch(e, task.id, token))} />
+            <button type='button' className="bg-deleteBtn w-[16px] h-[16px] bg-no-repeat absolute right-0 top-[2px]" onClick={() => dispatch(deleteItemDispatch(task.id, token))} />
           </li>
         ))}
       </ul >
       <div className="list flex justify-between px-6 pb-6">
         <span>{tasks.uncompleted} 個待完成項目</span>
-        <button className='ms-auto' onClick={() => clearAllCompleteItemDispatch(tasks)}>清除已完成項目</button>
+        <button className='ms-auto' onClick={() => dispatch(clearAllCompleteItemDispatch(tasks, token))}>清除已完成項目</button>
       </div>
     </div>
 
@@ -95,9 +48,9 @@ function filterTodos(tasks, tab) {
     if (tab === 0) {
       return true;
     } else if (tab === 1) {
-      return !todo.completed;
+      return !todo.status;
     } else if (tab === 2) {
-      return todo.completed;
+      return todo.status;
     }
   });
 }

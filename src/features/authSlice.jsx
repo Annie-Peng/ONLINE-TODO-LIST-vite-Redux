@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import Cookies from 'js-cookie'
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -37,12 +38,13 @@ export const registerAccount = (inputs) => async (dispatch) => {
 
 export const loginData = (inputs) => async (dispatch) => {
   try {
-    const result = await axios.post('https://todolist-api.hexschool.io/users/sign_in', {
+    const res = await axios.post('https://todolist-api.hexschool.io/users/sign_in', {
       "email": inputs.email,
       "password": inputs.password
     })
-    // console.log(result.data)
-    dispatch(getAuth(result.data))
+    dispatch(getAuth(res.data));
+    Cookies.set('authTokenCookie', res.data.token.toString(), { expires: 1 });
+    Cookies.set('authNameCookie', res.data.nickname.toString(), { expires: 1 });
     return true;
   }
   catch (err) {

@@ -17,7 +17,7 @@ export default function ToDoList() {
   useEffect(() => {
     if (!auth.token) {
       const token = Cookies.get('authTokenCookie');
-      const nickname = Cookies.get('authTokenCookie');
+      const nickname = Cookies.get('authNameCookie');
       dispatch(fetchData(token));
       dispatch(getAuth({ token, nickname }))
     } else {

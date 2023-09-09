@@ -11,11 +11,17 @@ export const authSlice = createSlice({
     getAuth(state, action) {
       state.userName = action.payload.nickname;
       state.token = action.payload.token;
+    },
+    logout(state) {
+      Cookies.remove('authTokenCookie');
+      Cookies.remove('authNameCookie');
+      state.userName = '';
+      state.token = '';
     }
   }
 })
 
-export const { getAuth } = authSlice.actions;
+export const { getAuth, logout } = authSlice.actions;
 
 export const selectAuth = state => state.auth;
 
@@ -46,6 +52,21 @@ export const loginData = (inputs) => async (dispatch) => {
     Cookies.set('authTokenCookie', res.data.token.toString(), { expires: 1 });
     Cookies.set('authNameCookie', res.data.nickname.toString(), { expires: 1 });
     return true;
+  }
+  catch (err) {
+    console.log(err)
+  }
+}
+
+export const logoutAccount = (token) => async (dispatch) => {
+  try {
+    await axios.post('https://todolist-api.hexschool.io/users/sign_out', {}, {
+      headers: {
+        Authorization: token
+      }
+    })
+    dispatch(logout())
+    return true
   }
   catch (err) {
     console.log(err)

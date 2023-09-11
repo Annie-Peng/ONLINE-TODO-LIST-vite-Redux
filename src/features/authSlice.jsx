@@ -51,10 +51,11 @@ export const loginData = (inputs) => async (dispatch) => {
     dispatch(getAuth(res.data));
     Cookies.set('authTokenCookie', res.data.token.toString(), { expires: 1 });
     Cookies.set('authNameCookie', res.data.nickname.toString(), { expires: 1 });
-    return true;
+    return res;
   }
   catch (err) {
     console.log(err)
+    return err.response.data
   }
 }
 

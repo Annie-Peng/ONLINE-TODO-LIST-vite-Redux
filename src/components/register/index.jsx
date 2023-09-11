@@ -15,7 +15,7 @@ export default function Register() {
       rePassword: formData.get('rePassword'),
     }
     dispatch(registerAccount(inputs))
-      .then(res => res && navigate('/todolist'))
+      .then(res => res && navigate('/'))
   }
 
   return (

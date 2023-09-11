@@ -29,15 +29,16 @@ export default authSlice.reducer;
 
 export const registerAccount = (inputs) => async (dispatch) => {
   try {
-    const result = await axios.post('https://todolist-api.hexschool.io/users/sign_up', {
+    const res = await axios.post('https://todolist-api.hexschool.io/users/sign_up', {
       "email": inputs.email,
       "password": inputs.password,
       "nickname": inputs.userName
     })
-    return true;
+    return res.data;
   }
   catch (err) {
     console.log(err)
+    return err.response.data
   }
 }
 

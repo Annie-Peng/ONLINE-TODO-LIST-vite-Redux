@@ -28,7 +28,6 @@ export const registerAccount = (inputs) => async (dispatch) => {
       "password": inputs.password,
       "nickname": inputs.userName
     })
-    dispatch(getAuth(inputs.userName, result.data));
     return true;
   }
   catch (err) {
